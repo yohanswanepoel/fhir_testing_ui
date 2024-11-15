@@ -1,0 +1,30 @@
+<!-- templates/_message_detail.html -->
+<div class="space-y-4">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold">Message Details</h3>
+        <button onclick="closeMessageModal()" 
+                class="text-gray-500 hover:text-gray-700 p-2">
+            ✕
+        </button>
+    </div>
+    <div>
+        <h4 class="font-medium text-gray-700">Message Type</h4>
+        <p class="mt-1">{{ message.message_type.name }}</p>
+    </div>
+    <div>
+        <h4 class="font-medium text-gray-700">Name</h4>
+        <p class="mt-1">{{ message.name }}</p>
+    </div>
+    <div>
+        <h4 class="font-medium text-gray-700">Description</h4>
+        <p class="mt-1">{{ message.description or 'No description provided' }}</p>
+    </div>
+    <div>
+        <h4 class="font-medium text-gray-700">Message Content</h4>
+        <pre class="mt-1 bg-gray-50 p-4 rounded-md overflow-x-auto text-sm">{{ message.message_content }}</pre>
+    </div>
+    <div>
+        <h4 class="font-medium text-gray-700">Created At</h4>
+        <p class="mt-1">{{ message.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    </div>
+</div>
