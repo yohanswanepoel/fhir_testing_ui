@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, abort
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
@@ -19,13 +19,7 @@ class MessageType(db.Model):
     endpoint = db.Column(db.String(150), nullable=False, default="http://localhost:8080/validator")
     # Relationships
     test_messages = db.relationship('TestMessage', backref='message_type', lazy=True)
-
-class MessageEndpoint(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.Text)
-    message_type_id = db.Column(db.Integer, db.ForeignKey('message_type.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    transforms = db.relationship('XSLTransform', backref='message_type', lazy=True)
 
 class TestMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -45,6 +39,7 @@ class XSLTransform(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     transform_content = db.Column(db.Text, nullable=False)
+    message_type_id = db.Column(db.Integer, db.ForeignKey('message_type.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 ####
@@ -81,7 +76,8 @@ def create_message_type():
         )
         db.session.add(type)
         db.session.commit()
-        return f'<p>Created</p>'
+        message = "Success"
+        return render_template('_good_alert.html', message=message)
     except Exception as e:
         print("Error:", str(e))
         return str(e), 400
@@ -110,7 +106,6 @@ def get_message_types_options():
     message_types = MessageType.query.all()
     return render_template('message_types/_options.html', message_types=message_types)
 
-
 ####
 ####  Messages 
 ####
@@ -131,8 +126,8 @@ def create_message():
         )
         db.session.add(message)
         db.session.commit()
-        
-        return redirect(url_for('index'))
+        message = "Success"
+        return render_template('_good_alert.html', message=message)
     except Exception as e:
         print("Error:", str(e))
         return str(e), 400
@@ -206,18 +201,52 @@ def create_response():
 ####
 ####  Transforms 
 ####
+@app.route('/get_transforms')
+def get_transforms():
+    transforms = XSLTransform.query.order_by(XSLTransform.created_at.desc()).all()
+    return render_template('transforms/_list.html', transforms=transforms)
+
 @app.route('/api/transforms', methods=['POST'])
 def create_transform():
-    data = request.json
-    transform = XSLTransform(
-        name=data['name'],
-        transform_content=data['content']
-    )
-    db.session.add(transform)
-    db.session.commit()
-    return jsonify({'status': 'success'})
+    try:
+        transform = XSLTransform(
+            name=request.form.get("name"),
+            transform_content=request.form.get("content"),
+            message_type_id=request.form.get("message_type_id")
+        )
+        db.session.add(transform)
+        db.session.commit()
+        message = "Success"
+        return render_template('_good_alert.html', message=message)
+    except Exception as e:
+        print("Error:", str(e))
+        return str(e), 400
+    
+@app.route('/api/transform/<int:id>', methods=['GET'])
+def get_transform(id):
+    transform = XSLTransform.query.get_or_404(id)
+    return render_template('transforms/_detail.html', transform=transform)
 
+# Get transform by Message Type (should only allow 1)
+# curl "127.0.0.1:5000/api/xsl?name=Patient"
+@app.route('/api/xsl', methods=['GET'])
+def get_transform_by_name():
+    name = request.args.get("name")
+    message_type = MessageType.query.filter_by(name=name).first()
+    transforms = message_type.transforms if message_type else []
+    if transforms:
+        return transforms[0].transform_content
+    abort(404)
 
+@app.route('/api/transform/<int:id>', methods=['DELETE'])
+def delete_transform(id):
+    try:
+        transform = XSLTransform.query.get_or_404(id)
+        db.session.delete(transform)
+        db.session.commit()
+        return '', 204
+    except Exception as e:
+        return str(e), 400
     
 @app.route('/')
 def index():
@@ -230,4 +259,4 @@ def index():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port="5500", debug=True)
