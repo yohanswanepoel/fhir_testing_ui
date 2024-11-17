@@ -1,0 +1,39 @@
+
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+            <!-- Left side -->
+            <div class="flex items-center">
+                <div class="text-white text-xl font-bold">
+                    Message Transformation Demo
+                </div>
+                
+            </div>
+            <div class="flex items-center">
+
+                <button hx-get="/static/messages/admin.html"
+                        hx-target="#body_content"
+                        hx-swap="innerHTML"
+                class="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-3 py-2 rounded-md">
+                    Message Testing
+                </button>
+
+                <button hx-get="/static/message_types/admin.html"
+                        hx-target="#body_content"
+                        hx-swap="innerHTML"
+                class="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-3 py-2 rounded-md">
+                    Message Type(s)
+                </button>
+
+                <button hx-get="/static/transforms/admin.html"
+                        hx-target="#body_content"
+                        hx-swap="innerHTML"
+                class="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-3 py-2 rounded-md">
+                    Transform Admin
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+
+

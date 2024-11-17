@@ -6,209 +6,24 @@
     <title>Message Testing Demo</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.13"></script>
 </head>
 <body class="bg-gray-100">
-    <nav hx-get="static/_header.html" hx-trigger="load" class="bg-white shadow-lg">
+    <nav hx-get="static/header.html" hx-trigger="load" class="shadow-black/5 dark:bg-neutral-600 dark:shadow-black/10">
         
     </nav>
+    <div id="body_content">
+
+    </div>
     <div class="container mx-auto px-4 py-8">
         <div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
                 <div id="edit-modal-content"></div>
             </div>
         </div>
-        <!-- Type Creator -->
-        <div id="type-creator" class="hidden">
-            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h2 class="text-xl font-semibold mb-4">Create Message Type</h2>
-                <form hx-post="/api/message_types" hx-target="#formMessageType" hx-swap="innerHTML" >
-                    <div id="formMessageType"></div>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Name</label>
-                            <input type="text" name="name" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Description</label>
-                            <textarea name="description"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">URI</label>
-                            <input type="text" name="endpoint" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        </div>
-                        <button type="submit"
-                                class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
-                            Create Message Type
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <!-- Message Creation Form (Hidden by default) -->
-        <div id="message-creator" class="hidden">
-            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h2 class="text-xl font-semibold mb-4">Create Test Message</h2>
-                <form action="/api/messages" method="POST">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Message Type</label>
-                            <select name="message_type_id" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                                    hx-get="/get_message_types_options"
-                                    hx-trigger="load">
-                                <option value="">Select a message type...</option>
-                                {% for type in message_types %}
-                                <option value="{{ type.id }}">{{ type.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Name</label>
-                            <input type="text" name="name" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Description</label>
-                            <textarea name="description"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Message Content</label>
-                            <textarea name="content" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm font-mono"
-                                    rows="4"></textarea>
-                        </div>
-                        <button type="submit"
-                                class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                            Create Message
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-    </div>
-
-        <!-- Message Type Table -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-xl font-semibold mb-4">Message Types</h2>
-            <div class="overflow-x-auto">
-                <table id="message-types-table" class="min-w-full">
-                    <thead>
-                        <tr class="bg-gray-50">
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Endpoints</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody hx-get="/get_message_types" 
-                        hx-trigger="load, every 2s">
-                        <!-- Content will be loaded by HTMX -->
-                    </tbody>
-                </table>
-        </div>
-        </div>
-
-        <!-- Message Modal -->
-        <div id="message-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-                <div id="modal-content"></div>
-            </div>
-        </div>
-
-        <script>
-            function viewMessage(id) {
-                const modal = document.getElementById('message-modal');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                htmx.ajax('GET', `/api/messages/${id}`, { target: '#modal-content' });
-            }
-    
-            function closeMessageModal() {
-                const modal = document.getElementById('message-modal');
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-    
-            function toggleForm(formId) {
-                const form = document.getElementById(formId);
-                const isHidden = form.classList.contains('hidden');
-                
-                // Hide all forms first
-                document.getElementById('type-creator').classList.add('hidden');
-                document.getElementById('message-creator').classList.add('hidden');
-                
-                // Show the clicked form if it was hidden
-                if (isHidden) {
-                    form.classList.remove('hidden');
-                }
-            }
-    
-            // Close modal when clicking outside
-            document.getElementById('message-modal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeModal();
-                }
-            });
-    
-            // Close modal with escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeModal();
-                }
-            });
-        </script>
-
-
-        <!-- Messages Table -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-semibold mb-4">Test Messages</h2>
-            <div class="overflow-x-auto">
-                <table id="messages-table" class="min-w-full">
-                    <thead>
-                        <tr class="bg-gray-50">
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody hx-get="/get_test_messages" 
-                           hx-trigger="load, every 2s">
-                        <!-- Content will be loaded by HTMX -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-semibold mb-4">Message Result</h2>
-        <div id="send-result"
-        class="text-sm">
-        
-        </div>
-    </div>
-    <script>
-        function toggleForm(formId) {
-            const form = document.getElementById(formId);
-            const isHidden = form.classList.contains('hidden');
-            
-            // Hide all forms first
-            document.getElementById('type-creator').classList.add('hidden');
-            document.getElementById('message-creator').classList.add('hidden');
-            
-            // Show the clicked form if it was hidden
-            if (isHidden) {
-                form.classList.remove('hidden');
-            }
-        }
-    </script>
+    </div>        
+</div>
     <script>
         function showModal() {
             document.getElementById('edit-modal').classList.remove('hidden');
@@ -228,13 +43,6 @@
         // Close modal with escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-
-        // Listen for successful form submission
-        document.body.addEventListener('htmx:afterSwap', function(event) {
-            if (event.detail.target.matches('tr')) {
                 closeModal();
             }
         });

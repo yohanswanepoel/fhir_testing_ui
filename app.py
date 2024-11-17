@@ -53,7 +53,7 @@ class XSLTransform(db.Model):
 @app.route('/api/message_types/<int:id>/edit', methods=['GET'])
 def edit_message_type_form(id):
     type = MessageType.query.get_or_404(id)
-    return render_template('message_types/_edit_message_type_form.html', type=type)
+    return render_template('message_types/_edit.html', type=type)
 
 @app.route('/api/message_types/<int:id>', methods=['PUT', 'PATCH'])
 def update_message_type(id):
@@ -89,7 +89,7 @@ def create_message_type():
 @app.route('/get_message_types')
 def get_message_types():
     types = MessageType.query.all()
-    return render_template('message_types/_message_types_table_body.html', message_types=types)
+    return render_template('message_types/_list.html', message_types=types)
 
 @app.route('/api/message_types/<int:id>', methods=['DELETE'])
 def delete_message_type(id):
@@ -101,14 +101,14 @@ def delete_message_type(id):
     except Exception as e:
         return str(e), 400
     
-@app.route('/partials/endpoint-input')
-def endpoint_input():
-    return render_template('message_types/_endpoint_input.html')
+#@app.route('/partials/endpoint-input')
+#def endpoint_input():
+#    return render_template('message_types/_endpoint_input.html')
 
 @app.route('/get_message_types_options')
 def get_message_types_options():
     message_types = MessageType.query.all()
-    return render_template('message_types/_message_type_options.html', message_types=message_types)
+    return render_template('message_types/_options.html', message_types=message_types)
 
 
 ####
@@ -117,7 +117,7 @@ def get_message_types_options():
 @app.route('/get_test_messages')
 def get_test_messages():
     test_messages = TestMessage.query.order_by(TestMessage.created_at.desc()).all()
-    return render_template('messages/_test_messages_table_body.html', test_messages=test_messages)
+    return render_template('messages/_list.html', test_messages=test_messages)
 
 
 @app.route('/api/messages', methods=['POST'])
@@ -141,7 +141,7 @@ def create_message():
 def get_message(id):
     print("---------------")
     message = TestMessage.query.get_or_404(id)
-    return render_template('messages/_message_detail.html', message=message)
+    return render_template('messages/_detail.html', message=message)
 
 @app.route('/api/messages/<int:id>', methods=['DELETE'])
 def delete_message(id):
@@ -181,7 +181,7 @@ def send_message(id):
                 'error': str(e)
             })
 
-        return render_template('responses/_response_result.html', message=results[0]) 
+        return render_template('responses/_view.html', message=results[0]) 
     
     except Exception as e:
         return jsonify({
@@ -201,7 +201,7 @@ def create_response():
     )
     db.session.add(response)
     db.session.commit()
-    return render_template('responses/_response_row.html', response=response)
+    return render_template('responses/_row.html', response=response)
 
 ####
 ####  Transforms 

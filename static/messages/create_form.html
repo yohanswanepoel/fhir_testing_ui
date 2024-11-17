@@ -1,0 +1,47 @@
+<div id="message-creator">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold">Create Message</h3>
+            <button onclick="closeModal()" 
+                    class="text-gray-500 hover:text-gray-700 p-2">
+                ✕
+            </button>
+        </div>
+        <form action="/api/messages" method="POST">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Message Type</label>
+                    <select name="message_type_id" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            hx-get="/get_message_types_options"
+                            hx-trigger="load">
+                        <option value="">Select a message type...</option>
+                        {% for type in message_types %}
+                        <option value="{{ type.id }}">{{ type.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" name="name" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea name="description"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Message Content</label>
+                    <textarea name="content" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm font-mono"
+                            rows="4"></textarea>
+                </div>
+                <button type="submit"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    Create Message
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

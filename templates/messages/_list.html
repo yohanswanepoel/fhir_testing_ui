@@ -6,14 +6,19 @@
     <td class="px-6 py-4">{{ message.description }}</td>
     <td class="px-6 py-4 whitespace-nowrap">{{ message.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
     <td class="px-6 py-4 whitespace-nowrap">
-        <button onclick="viewMessage({{ message.id }})"
+        <button 
+                hx-get="/api/messages/{{ message.id }}"
+                hx-target="#edit-modal-content"
+                hx-swap="innerHTML"
+                onclick="showModal()"
                 class="text-blue-600 hover:text-blue-900 mr-2">
-            View
+                View
         </button>
         <button hx-post="/api/messages/{{ message.id }}/send"
                 hx-trigger="click"
-                hx-target="#send-result"
+                hx-target="#edit-modal-content"
                 hx-swap="innerHTML"
+                onclick="showModal()"
                 hx-indicator="#spinner-{{ message.id }}"
                 class="text-green-600 hover:text-green-900">
             Send

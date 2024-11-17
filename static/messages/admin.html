@@ -1,0 +1,31 @@
+<!-- Messages Table -->
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold mb-4">Test Messages</h2>
+    
+    <button hx-get="/static/messages/create_form.html"
+                hx-target="#edit-modal-content"
+                hx-swap="innerHTML"
+                hx-target="body" hx-swap="beforeend"
+                onclick="showModal()"
+                class="rounded bg-blue-500 px-4 py-2 text-white">
+            Create
+    </button>
+
+    <div class="overflow-x-auto">
+        <table id="messages-table" class="min-w-full">
+            <thead>
+                <tr class="bg-gray-50">
+                    <th class="px-6 py-3 text-message-modalleft text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody hx-get="/get_test_messages" 
+                   hx-trigger="load, every 2s">
+                <!-- Content will be loaded by HTMX -->
+            </tbody>
+        </table>
+    </div>
+</div>
