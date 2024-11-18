@@ -3,6 +3,11 @@
 ## Defaults
 * Port: 5500
 
+## Things to know
+* Dynamic Routes in Camel: dynamicRoute: /api/xsl?name={FHIR Resource}
+* Dynamic Routes in Camel with routing: {TODO}
+* Patient only route: validate
+
 ## TODO
 * Build containers
 
