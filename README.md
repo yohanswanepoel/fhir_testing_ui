@@ -20,4 +20,17 @@
 * curl "localhost:5500/api/xsl?name=Patient"
 
 
+## containers
 
+* TODO: Think about Podman network
+
+Building for testing on mac
+```bash
+podman build . -t f2c-demo-ui
+podman run --rm --name f2c-demo-ui -p 5500:5000 localhost/f2c-demo-ui
+```
+
+Building to push to x86 repo
+```bash
+podman build . -t f2c-demo-ui --platform linux/amd64
+```
