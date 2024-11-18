@@ -151,9 +151,13 @@ def delete_message(id):
 # Messages sending to endpoint
 @app.route('/api/messages/<int:id>/send', methods=['POST'])
 def send_message(id):
+    toFhir = request.args.get('toFHIR')
+    print(f"Send to FHIR .... {toFhir}")
     try:
         message = TestMessage.query.get_or_404(id)
         endpoint = message.message_type.endpoint
+        if toFhir:
+            endpoint = f"{endpoint}?toFHIR=Y"
         results = []
         try:
             # Send the message content to the endpoint
@@ -163,19 +167,20 @@ def send_message(id):
                 headers={'Content-Type': 'application/json'},
                 timeout=10  # 10 second timeout
             )
-            print(response.text)
             results.append({
                 'endpoint': endpoint,
                 'status': response.status_code,
                 'response': response.text
             })
-        except request.exceptions.RequestException as e:
+        except requests.exceptions.RequestException as e:
+            print("test")
             results.append({
                 'endpoint': endpoint,
-                'status': 'error',
-                'error': str(e)
+                'status': 'Error',
+                'response': str(e)
             })
-
+            #render_template('responses/_view.html', message=results[0]) 
+            
         return render_template('responses/_view.html', message=results[0]) 
     
     except Exception as e:
