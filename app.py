@@ -189,7 +189,7 @@ def send_message(id):
                 transformStatus = "green"
                 transformationColour = "#50b068"
                 transformStore = "#9b59b6"
-            if toFhir:
+            if toFhir and 'validation-passed' in response.headers:
                 fhirColour = "#e6a843"
                 if 'fhir_updated' in response.headers:
                     fhirStatus = "green"
