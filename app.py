@@ -50,16 +50,16 @@ def edit_message_type_form(id):
     type = MessageType.query.get_or_404(id)
     return render_template('message_types/_edit.html', type=type)
 
-@app.route('/api/message_types/<int:id>', methods=['PUT', 'PATCH'])
+@app.route('/api/message_types/<int:id>', methods=['POST'])
 def update_message_type(id):
     try:
         type = MessageType.query.get_or_404(id)
         type.name = request.form['name']
         type.description = request.form['description']
         type.endpoint = request.form['endpoint']
-        
+        message = "Success"
         db.session.commit()
-        
+        #return render_template('_good_alert.html', message=message)
         return redirect('/static/message_types/admin.html')
     except Exception as e:
         db.session.rollback()
@@ -76,9 +76,7 @@ def create_message_type():
         )
         db.session.add(type)
         db.session.commit()
-        message = "Success"
         return redirect('/static/message_types/admin.html')
-        #return render_template('_good_alert.html', message=message)
     except Exception as e:
         print("Error:", str(e))
         return str(e), 400

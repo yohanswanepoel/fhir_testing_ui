@@ -8,9 +8,11 @@
         </button>
     </div>
     <div id="formUpdateMessageType"></div>
-    <form hx-put="/api/message_types/{{ type.id }}"
-            hx-target="#body_content" hx-swap="innerHTML"
-          class="space-y-4" hx-target="#formUpdateMessageType" hx-swap="innerHTML">
+
+    <form hx-post="/api/message_types/{{ type.id }}"
+            
+            hx-target="#body_content" hx-swap="innerHTML" 
+          class="space-y-4">
         <div>
             <label class="block text-sm font-medium text-gray-700">Name</label>
             <input type="text" 
