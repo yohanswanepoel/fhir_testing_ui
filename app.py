@@ -152,12 +152,22 @@ def delete_message(id):
 @app.route('/api/messages/<int:id>/send', methods=['POST'])
 def send_message(id):
     toFhir = request.args.get('toFHIR')
-    print(f"Send to FHIR .... {toFhir}")
     try:
         message = TestMessage.query.get_or_404(id)
         endpoint = message.message_type.endpoint
+        emrStatus = 'gray'
+        toFHIR = "n"
+        fhirColour = "gray"
+        validationStatus = "gray"
+        validationColour = "gray"
+        transformationColour = "gray" 
+        transformStore = "gray"
+        transformStatus = "gray"
+        fhirStatus = "gray"
+        emrColour = "#4a90e2"
         if toFhir:
             endpoint = f"{endpoint}?toFHIR=Y"
+            toFHIR = "y"
         results = []
         try:
             # Send the message content to the endpoint
@@ -167,20 +177,57 @@ def send_message(id):
                 headers={'Content-Type': 'application/json'},
                 timeout=10  # 10 second timeout
             )
+            emrStatus = 'green'
+            validationColour = '#50b068'
+            if 'validation-passed' in response.headers:
+                validationResult = response.headers['validation-passed']
+                if validationResult == "true":
+                    validationStatus = "green"
+                else:
+                    validationStatus = "red"
+            if 'message_transformed' in response.headers:
+                transformStatus = "green"
+                transformationColour = "#50b068"
+                transformStore = "#9b59b6"
+            if toFhir:
+                fhirColour = "#e6a843"
+                if 'fhir_updated' in response.headers:
+                    fhirStatus = "green"
+                else:
+                    fhirStatus = "red"
             results.append({
                 'endpoint': endpoint,
+                'toFHIR': toFHIR,
                 'status': response.status_code,
-                'response': response.text
+                'response': response.text,
+                'emrStatus': emrStatus,
+                'fhirColour': fhirColour,
+                'validationColour': validationColour,
+                'validationStatus': validationStatus,
+                'transformationColour': transformationColour,
+                'transformStore': transformStore,
+                'transformStatus': transformStatus,
+                'fhirStatus': fhirStatus,
+                'emrColour': emrColour
             })
+            
         except requests.exceptions.RequestException as e:
-            print("test")
+            print("Exception section")
+            emrStatus = 'red'
             results.append({
                 'endpoint': endpoint,
                 'status': 'Error',
-                'response': str(e)
+                'response': str(e),
+                'emrStatus': emrStatus,
+                'fhirColour': fhirColour,
+                'validationColour': validationColour,
+                'validationStatus': validationStatus,
+                'transformationColour': transformationColour,
+                'transformStore': transformStore,
+                'transformStatus': transformStatus,
+                'fhirStatus': fhirStatus,
+                'emrColour': emrColour
             })
-            #render_template('responses/_view.html', message=results[0]) 
-            
         return render_template('responses/_view.html', message=results[0]) 
     
     except Exception as e:
