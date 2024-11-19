@@ -7,74 +7,14 @@
         </button>
     </div>
     <div>
-        <label class="block text-sm font-medium text-gray-700">Status:  {{ message.status }} </label>
+        <label class="block text-sm font-medium text-gray-700">id:  {{ message.id }} </label>
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
-        <!-- Styles -->
-        <defs>
-            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
-            </marker>
-        </defs>
-        
-        <!-- Components -->
-        <!-- EMR System -->
-        <rect id="emr-box" x="50" y="250" width="120" height="60" rx="10" fill="{{ message.emrColour }}" />
-        <text x="110" y="285" text-anchor="middle" fill="white" font-family="Arial">EMR System</text>
-        <circle id="emr-status" cx="155" cy="265" r="10" fill="{{ message.emrStatus }}" stroke="white" stroke-width="1"/>
-        
-        <!-- API Container -->
-        <rect id="api-container" x="250" y="150" width="500" height="260" rx="10" fill="#e8e8e8" stroke="#50b068" stroke-width="2"/>
-        <text x="500" y="180" text-anchor="middle" fill="#333" font-family="Arial" font-weight="bold">API</text>
-        
-        <!-- API Internal Components -->
-        <!-- Validation Box -->
-        <rect id="validation-box" x="300" y="200" width="160" height="60" rx="5" fill="{{ message.validationColour }}"/>
-        <text x="380" y="235" text-anchor="middle" fill="white" font-family="Arial">Message</text>
-        <text x="380" y="250" text-anchor="middle" fill="white" font-family="Arial">Validation</text>
-        <circle id="validation-status" cx="445" cy="215" r="10" fill="{{ message.validationStatus }}" stroke="white" stroke-width="1"/>
-        
-        <!-- Transformation Box -->
-        <rect id="transformation-box" x="540" y="200" width="160" height="60" rx="5" fill="{{ message.transformationColour }}"/>
-        <text x="620" y="235" text-anchor="middle" fill="white" font-family="Arial">Message</text>
-        <text x="620" y="250" text-anchor="middle" fill="white" font-family="Arial">Transformation</text>
-        <circle id="transformation-status" cx="685" cy="215" r="10" fill="{{ message.transformStatus }}" stroke="white" stroke-width="1"/>
-        
-        <!-- Internal Process Arrows -->
-        <line x1="460" y1="230" x2="530" y2="230" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
-        
-        <!-- FHIR Repository -->
-        <rect id="fhir-box" x="850" y="100" width="120" height="60" rx="10" fill="{{ message.fhirColour }}" />
-        <text x="910" y="135" text-anchor="middle" fill="white" font-family="Arial">FHIR</text>
-        <circle id="fhir-status" cx="955" cy="115" r="10" fill="{{ message.fhirStatus }}" stroke="white" stroke-width="1"/>
-        
-        <!-- Transform Logic Store -->
-        <rect id="transform-logic-box" x="850" y="400" width="120" height="60" rx="10" fill="{{ message.transformStore }}" />
-        <text x="910" y="425" text-anchor="middle" fill="white" font-family="Arial" font-size="14">Transform</text>
-        <text x="910" y="445" text-anchor="middle" fill="white" font-family="Arial" font-size="14">Logic Store</text>
-        <circle id="transform-logic-status" cx="955" cy="415" r="10" fill="{{ message.transformStatus }}" stroke="white" stroke-width="1"/>
-        
-        <!-- Flow Arrows -->
-        <!-- EMR to API -->
-        <line x1="170" y1="255" x2="240" y2="255" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" />
-        <text x="205" y="245" font-family="Arial" font-size="12">Send Record</text>
-        
-        <!-- API to FHIR -->
-        <line x1="750" y1="230" x2="840" y2="135" stroke="#333" stroke-width="2" marker-end="url(#a rrowhead)" />
-        <text x="780" y="165" font-family="Arial" font-size="12">Store (if required)</text>
-        
-        <!-- Transform Logic to API -->
-        <line x1="840" y1="430" x2="750" y2="330" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" />
-        <text x="770" y="400" font-family="Arial" font-size="12">Get Transform Logic</text>
-        
-        <!-- API Response -->
-        <line x1="240" y1="305" x2="170" y2="305" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" />
-        <text x="205" y="320" font-family="Arial" font-size="12">API Response</text>
-    </svg>
-    
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Test Message:  {{ message.message.name }} </label>
+    </div>
     <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
     rows="20">
-        {{ message.response }}
+        {{ message.response_content }}
     </textarea>
 </div>
 

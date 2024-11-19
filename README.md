@@ -39,7 +39,7 @@ podman run --rm --name f2c-demo-ui --network demonet -p 5500:5000 localhost/f2c-
 
 Did you build the camel route container as per the instructions in: https://github.com/yohanswanepoel/camel-fhir ?
 ```bash
-podman run --rm --name f2c-demo-camel --network demonet -p 8080:8080 -e env_xslhost="http://f2c-demo-ui:5000/api/xsl?name=" -e env_fhirhost="http://fhirhost:8080/fhir" f2c-demo-camel
+podman run --rm --name f2c-demo-camel --network demonet -p 8080:8080 -e env_xslhost="http://f2c-demo-ui:5000/api/xsl?name=" -e env_fhirhost="http://fhirhost:8080/fhir" -e env_cdahost="http://10.215.66.15:5500/cda_system" f2c-demo-camel
 ```
 
 If you want the FHIR host: http://localhost:8090/

@@ -1,7 +1,16 @@
 <tr class="hover:bg-gray-50">
-    <td class="px-6 py-4 whitespace-nowrap">{{ response.test_message_id }}</td>
+    <td class="px-6 py-4 whitespace-nowrap">{{ message.test_message_id }}</td>
     <td class="px-6 py-4">
-        <pre class="text-sm">{{ response.response_content }}</pre>
+        <pre class="text-sm">{{ message.message.name }}</pre>
     </td>
-    <td class="px-6 py-4 whitespace-nowrap">{{ response.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+    <td class="px-6 py-4 whitespace-nowrap">{{ message.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+    <td class="px-6 py-4"><button 
+        hx-get="/api/responses/{{ message.id }}"
+        hx-target="#edit-modal-content"
+        hx-swap="innerHTML"
+        onclick="showModal()"
+        class="text-blue-600 hover:text-blue-900 mr-2">
+        View
+</button></td>
+    
 </tr>

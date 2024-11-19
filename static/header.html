@@ -17,6 +17,13 @@
                     Message Testing
                 </button>
 
+                <button hx-get="/static/responses/admin.html"
+                        hx-target="#body_content"
+                        hx-swap="innerHTML"
+                class="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-3 py-2 rounded-md">
+                    CDA Responses
+                </button>
+
                 <button hx-get="/static/message_types/admin.html"
                         hx-target="#body_content"
                         hx-swap="innerHTML"
@@ -30,6 +37,8 @@
                 class="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-3 py-2 rounded-md">
                     Transforms
                 </button>
+
+                
 
             </div>
         </div>

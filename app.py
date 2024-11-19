@@ -28,12 +28,17 @@ class TestMessage(db.Model):
     message_content = db.Column(db.Text, nullable=False)
     message_type_id = db.Column(db.Integer, db.ForeignKey('message_type.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Relationsships
+    response = db.relationship('ResponseMessage',backref='message', lazy=True)
+
 
 class ResponseMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     test_message_id = db.Column(db.Integer, db.ForeignKey('test_message.id'))
     response_content = db.Column(db.Text)  # XML stored as text
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    
 
 class XSLTransform(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -165,6 +170,8 @@ def send_message(id):
         transformStatus = "gray"
         fhirStatus = "gray"
         emrColour = "#4a90e2"
+        cdaStore = "gray"
+        cdaStoreStatus = "gray"
         if toFhir:
             endpoint = f"{endpoint}?toFHIR=Y"
             toFHIR = "y"
@@ -174,9 +181,11 @@ def send_message(id):
             response = requests.post(
                 endpoint,
                 data=message.message_content,
-                headers={'Content-Type': 'application/json'},
+                headers={'Content-Type': 'application/json',
+                         'X-test-message-id': f'{id}'},
                 timeout=10  # 10 second timeout
             )
+            #print(response.headers)
             emrStatus = 'green'
             validationColour = '#50b068'
             if 'validation-passed' in response.headers:
@@ -189,6 +198,11 @@ def send_message(id):
                 transformStatus = "green"
                 transformationColour = "#50b068"
                 transformStore = "#9b59b6"
+                cdaStore = "#9b59b6"
+                if 'message_stored_cda' in response.headers:
+                    cdaStoreStatus = "green"
+                else:
+                    cdaStoreStatus = "red"
             if toFhir and 'validation-passed' in response.headers:
                 fhirColour = "#e6a843"
                 if 'fhir_updated' in response.headers:
@@ -208,7 +222,9 @@ def send_message(id):
                 'transformStore': transformStore,
                 'transformStatus': transformStatus,
                 'fhirStatus': fhirStatus,
-                'emrColour': emrColour
+                'emrColour': emrColour,
+                'cdaStore': cdaStore,
+                'cdaStoreStatus': cdaStoreStatus
             })
             
         except requests.exceptions.RequestException as e:
@@ -226,9 +242,11 @@ def send_message(id):
                 'transformStore': transformStore,
                 'transformStatus': transformStatus,
                 'fhirStatus': fhirStatus,
-                'emrColour': emrColour
+                'emrColour': emrColour,
+                'cdaStore': cdaStore,
+                'cdaStoreStatus': cdaStoreStatus
             })
-        return render_template('responses/_view.html', message=results[0]) 
+        return render_template('responses/_view_with_graph.html', message=results[0]) 
     
     except Exception as e:
         return jsonify({
@@ -239,6 +257,11 @@ def send_message(id):
 ####
 ####  Responses 
 ####
+@app.route('/api/responses/<int:id>', methods=['GET'])
+def get_response(id):
+    message = ResponseMessage.query.get_or_404(id)
+    return render_template('responses/_view.html', message=message)
+
 @app.route('/api/responses', methods=['POST'])
 def create_response():
     data = request.json
@@ -249,6 +272,44 @@ def create_response():
     db.session.add(response)
     db.session.commit()
     return render_template('responses/_row.html', response=response)
+
+@app.route('/get_responses', methods=['GET'])
+def get_all_responses():
+    messages = ResponseMessage.query.order_by(ResponseMessage.created_at.desc()).all()
+    return render_template('responses/_list.html', messages=messages)
+
+@app.route('/api/clear_responses', methods=['GET'])
+def clear_all_responses():
+    print("....DELETE ALL MESSAGES....")
+    ResponseMessage.query.delete()
+    db.session.commit()
+    return redirect('/static/responses/admin.html')
+
+@app.route('/api/run_all_tests', methods=['GET'])
+def run_all_tests():
+    #messages = ResponseMessage.query.order_by(ResponseMessage.created_at.desc()).all()
+    #TO DO Run All tests
+    return redirect('/static/responses/admin.html')
+
+###
+###  Test Responses - save the CDA message
+###
+
+@app.route('/cda_system', methods=['POST'])
+def store_test_result():
+    data = request.data 
+    if 'X-test-message-id' in request.headers:
+        message_id = request.headers['X-test-message-id']
+    else:
+        return '',404
+    test_message_id = int(message_id)
+    response = ResponseMessage(
+        test_message_id=test_message_id,
+        response_content=request.data 
+    )
+    db.session.add(response)
+    db.session.commit()
+    return 'success',200
 
 ####
 ####  Transforms 
