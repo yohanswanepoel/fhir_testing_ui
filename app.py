@@ -60,7 +60,7 @@ def update_message_type(id):
         
         db.session.commit()
         
-        return f'<p>Updated</p>'
+        return redirect('/static/message_types/admin.html')
     except Exception as e:
         db.session.rollback()
         return str(e), 400
@@ -77,7 +77,8 @@ def create_message_type():
         db.session.add(type)
         db.session.commit()
         message = "Success"
-        return render_template('_good_alert.html', message=message)
+        return redirect('/static/message_types/admin.html')
+        #return render_template('_good_alert.html', message=message)
     except Exception as e:
         print("Error:", str(e))
         return str(e), 400
@@ -93,7 +94,7 @@ def delete_message_type(id):
         type = MessageType.query.get_or_404(id)
         db.session.delete(type)
         db.session.commit()
-        return '', 204
+        return '', 200
     except Exception as e:
         return str(e), 400
     
@@ -127,7 +128,8 @@ def create_message():
         db.session.add(message)
         db.session.commit()
         message = "Success"
-        return render_template('_good_alert.html', message=message)
+        return redirect('/static/messages/admin.html')
+        #return render_template('_good_alert.html', message=message)
     except Exception as e:
         print("Error:", str(e))
         return str(e), 400
@@ -144,7 +146,7 @@ def delete_message(id):
         message = TestMessage.query.get_or_404(id)
         db.session.delete(message)
         db.session.commit()
-        return '', 204
+        return '', 200
     except Exception as e:
         return str(e), 400
 
@@ -268,8 +270,7 @@ def create_transform():
         )
         db.session.add(transform)
         db.session.commit()
-        message = "Success"
-        return render_template('_good_alert.html', message=message)
+        return redirect("/static/transforms/admin.html")
     except Exception as e:
         print("Error:", str(e))
         return str(e), 400
@@ -296,7 +297,7 @@ def delete_transform(id):
         transform = XSLTransform.query.get_or_404(id)
         db.session.delete(transform)
         db.session.commit()
-        return '', 204
+        return '', 200
     except Exception as e:
         return str(e), 400
     
