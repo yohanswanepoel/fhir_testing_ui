@@ -2,6 +2,12 @@
 
 ## Defaults
 * Port: 5500 (--host=0.0.0.0 --port=5500) 
+```bash
+export FLASK_APP=app
+flask run -h 0.0.0.0 -p 5500
+```
+
+
 
 ## Things to know
 * Dynamic Routes in Camel: dynamicRoute: /api/xsl?name={FHIR Resource}
@@ -64,6 +70,4 @@ Building to push to x86 repo
 ```bash
 podman build . -t f2c-demo-ui --platform linux/amd64
 ```
-
-
 
