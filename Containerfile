@@ -1,5 +1,5 @@
 # Build stage
-FROM fedora:latest as builder
+FROM fedora:41 as builder
 
 # Install build dependencies
 RUN dnf update -y && \
