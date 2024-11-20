@@ -382,7 +382,7 @@ def query_CDE():
     camel_host = os.environ.get('CAMEL_HOST',"http://localhost:8080")
     testId = request.form['test_message_id']
     response_message = ResponseMessage.query.get_or_404(testId)
-    content = response_message.response_content
+    target = request.form['endpoint']
     id = response_message.message.id
     object = response_message.message.message_type.name
     endpoint = f'{camel_host}/queryFHIRfromCDA/{object}/{id}'
@@ -390,7 +390,8 @@ def query_CDE():
         response = requests.post(
             endpoint,
             headers={'Content-Type': 'application/json',
-                        'X-test-message-id': f'{id}'},
+                        'X-test-message-id': f'{id}',
+                        'X-get-from': target},
             timeout=10  # 10 second timeout
         )
         message = {}
