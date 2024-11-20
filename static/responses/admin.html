@@ -1,16 +1,16 @@
 <!-- Messages Table -->
 <div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-xl font-semibold mb-4">Transformation Admin</h2>
+    <h2 class="text-xl font-semibold mb-4">CDA Responses</h2>
     <button hx-get="/api/clear_responses"
             hx-target="#body_content" hx-swap="innerHTML"
         class="rounded bg-orange-500 px-4 py-2 text-white">
     Clear Records
     </button>
-    <button hx-get="/api/run_all_tests"
+    <!--button hx-get="/api/run_all_tests"
             hx-target="#body_content" hx-swap="innerHTML"
     class="rounded bg-green-500 px-4 py-2 text-white">
     Run All Tests
-    </button>
+    </button-->
     <div class="overflow-x-auto">
         <table id="messages-table" class="min-w-full">
             <thead>
