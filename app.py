@@ -383,11 +383,20 @@ def delete_transform(id):
 @app.route('/queryFHIR2CDA', methods=['POST'])
 def query_CDE():
     camel_host = os.environ.get('CAMEL_HOST',"http://localhost:8080")
-    testId = request.form['test_message_id']
-    response_message = ResponseMessage.query.get_or_404(testId)
+    
     target = request.form['endpoint']
-    id = response_message.message.id
-    object = response_message.message.message_type.name
+    if target == 'cda':
+        testId = request.form['test_message_id']
+        response_message = ResponseMessage.query.get_or_404(testId)
+        object = response_message.message.message_type.name
+        id = testId
+    #id = response_message.message.id
+    
+    if target == 'fhir':
+        id = request.form['fhir_id']
+        fhir_type_id = request.form['fhir_type_object']
+        messageType = MessageType.query.get_or_404(fhir_type_id)
+        object = messageType.name
     endpoint = f'{camel_host}/queryFHIRfromCDA/{object}/{id}'
     try:
         response = requests.post(

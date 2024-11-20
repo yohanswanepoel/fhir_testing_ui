@@ -2,25 +2,57 @@
         hx-target="#edit-modal-content"
         hx-swap="innerHTML" >
     <div id="formMessage"></div>
-    
+    <h2 class="text-xl font-semibold mb-4">Get XML FHIR from CDA</h2>
     <div class="space-y-4">
         <div>
-            <label class="block text-sm font-medium text-gray-700">Get From</label>
             <select id="get_from" name="endpoint" required 
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                    <option value="cda">cda</option>
+                </select>   
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700">For CDA Target</label>
+            <select id="message_select" name="test_message_id" required 
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    hx-get="/get_cda_messages"
+                    hx-trigger="load"
+                    hx-target="#message_select"
+                    hx-swap="innerHTML">
+                
+            </select>
+        </div>
+        <button type="submit" onclick="showModal()"
+                class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+            Query
+        </button>
+    </div>
+</form>
+<form hx-post="/queryFHIR2CDA" 
+        hx-target="#edit-modal-content"
+        hx-swap="innerHTML" >
+    <div id="formMessage"></div>
+    <h2 class="text-xl font-semibold mb-4">... or Get JSON from FHIR Repo</h2>
+    <div class="space-y-4">
+        <div>
+            <select id="get_from" name="endpoint" required 
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                    <option value="fhir">fhir</option>
                 </select>   
         </div>
         <div>
-            <select id="message_type_select" name="test_message_id" required 
+            <label class="block text-sm font-medium text-gray-700">FHIR Type</label>
+            <select id="message_type_select" name="fhir_type_object" required 
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                    hx-get="/get_cda_messages"
+                    hx-get="/get_message_types_options"
                     hx-trigger="load"
                     hx-target="#message_type_select"
                     hx-swap="innerHTML">
                 
             </select>
+        </div>
+        <div>
+            <input type="text" name="fhir_id" required
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
         </div>
         <button type="submit" onclick="showModal()"
                 class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
