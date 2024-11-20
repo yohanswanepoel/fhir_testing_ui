@@ -316,12 +316,15 @@ def store_test_result():
     else:
         return '',404
     test_message_id = int(message_id)
-    response = ResponseMessage(
-        test_message_id=test_message_id,
-        response_content=request.data 
-    )
-    db.session.add(response)
-    db.session.commit()
+    
+    new = db.session.query(ResponseMessage.id).filter_by(test_message_id=test_message_id).first() is None
+    if new:
+        response = ResponseMessage(
+            test_message_id=test_message_id,
+            response_content=request.data 
+        )
+        db.session.add(response)
+        db.session.commit()
     return 'success',200
 
 
