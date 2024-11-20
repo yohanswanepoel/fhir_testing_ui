@@ -27,6 +27,14 @@
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gray-700">Direction</label>
+                    <select id="message_type_select" name="direction" required 
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                           <option value="c2f">CDA to FHIR</option>
+                           <option value="f2c">FHIR to CDA</option>
+                        </select>   
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700">Transform Content</label>
                     <textarea name="content" required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm font-mono"

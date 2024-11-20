@@ -48,6 +48,7 @@ USER 1001
 
 # Make sure we use the virtualenv
 ENV PATH="/opt/venv/bin:$PATH"
+ENV CAMEL_HOST='http://localhost:8080'
 
 # Expose port (adjust if needed)
 EXPOSE 5500

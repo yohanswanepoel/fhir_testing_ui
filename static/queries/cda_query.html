@@ -1,0 +1,21 @@
+<form hx-post="/queryFHIR2CDA" 
+        hx-target="#edit-modal-content"
+        hx-swap="innerHTML" >
+    <div id="formMessage"></div>
+    <div class="space-y-4">
+        <div>
+            <select id="message_type_select" name="test_message_id" required 
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    hx-get="/get_cda_messages"
+                    hx-trigger="load"
+                    hx-target="#message_type_select"
+                    hx-swap="innerHTML">
+                
+            </select>
+        </div>
+        <button type="submit" onclick="showModal()"
+                class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+            Query
+        </button>
+    </div>
+</form>

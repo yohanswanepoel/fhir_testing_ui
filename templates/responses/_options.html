@@ -1,0 +1,4 @@
+<option value="">Select a message type...</option>
+{% for type in messages %}
+<option value="{{ type.id }}">{{ type.message.name }}</option>
+{% endfor %}

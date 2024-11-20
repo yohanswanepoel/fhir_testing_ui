@@ -3,6 +3,7 @@
 ## Defaults
 * Port: 5500 (--host=0.0.0.0 --port=5500) 
 ```bash
+export CDA_HOST='http://localhost:8080'
 export FLASK_APP=app
 flask run -h 0.0.0.0 -p 5500
 ```
@@ -33,7 +34,7 @@ flask run -h 0.0.0.0 -p 5500
 Access UI: http://127.0.0.1:5500/
 ```bash
 podman network create demonet
-podman run --rm --name f2c-demo-ui --network demonet -p 5500:5000 localhost/f2c-demo-ui
+podman run --rm --name f2c-demo-ui --network -e CAMEL_HOST="http://localhost:8080" demonet -p 5500:5000 localhost/f2c-demo-ui
 ```
 
 

@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import os
 import requests
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///messages2.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -44,6 +45,7 @@ class XSLTransform(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     transform_content = db.Column(db.Text, nullable=False)
+    direction = db.Column(db.String(3), nullable=True, default='c2f')
     message_type_id = db.Column(db.Integer, db.ForeignKey('message_type.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -109,6 +111,11 @@ def delete_message_type(id):
 def get_message_types_options():
     message_types = MessageType.query.all()
     return render_template('message_types/_options.html', message_types=message_types)
+
+@app.route('/get_cda_messages')
+def get_cda_messages():
+    messages = ResponseMessage.query.all()
+    return render_template('responses/_options.html', messages=messages)
 
 ####
 ####  Messages 
@@ -257,6 +264,12 @@ def send_message(id):
 ####
 ####  Responses 
 ####
+
+@app.route('/cda_system/<int:id>', methods=['GET'])
+def get_cda_response(id):
+    message = ResponseMessage.query.get_or_404(id)
+    return message.response_content
+
 @app.route('/api/responses/<int:id>', methods=['GET'])
 def get_response(id):
     message = ResponseMessage.query.get_or_404(id)
@@ -311,6 +324,7 @@ def store_test_result():
     db.session.commit()
     return 'success',200
 
+
 ####
 ####  Transforms 
 ####
@@ -344,10 +358,12 @@ def get_transform(id):
 @app.route('/api/xsl', methods=['GET'])
 def get_transform_by_name():
     name = request.args.get("name")
+    direction = request.args.get("direction")
     message_type = MessageType.query.filter_by(name=name).first()
     transforms = message_type.transforms if message_type else []
-    if transforms:
-        return transforms[0].transform_content
+    for transform in transforms:
+        if transform.direction == direction:
+            return transform.transform_content
     abort(404)
 
 @app.route('/api/transform/<int:id>', methods=['DELETE'])
@@ -360,6 +376,30 @@ def delete_transform(id):
     except Exception as e:
         return str(e), 400
     
+
+@app.route('/queryFHIR2CDA', methods=['POST'])
+def query_CDE():
+    camel_host = os.environ.get('CAMEL_HOST',"http://localhost:8080")
+    testId = request.form['test_message_id']
+    response_message = ResponseMessage.query.get_or_404(testId)
+    content = response_message.response_content
+    id = response_message.message.id
+    object = response_message.message.message_type.name
+    endpoint = f'{camel_host}/queryFHIRfromCDA/{object}/{id}'
+    try:
+        response = requests.post(
+            endpoint,
+            headers={'Content-Type': 'application/json',
+                        'X-test-message-id': f'{id}'},
+            timeout=10  # 10 second timeout
+        )
+        message = {}
+        message['response'] = response.status_code
+        message['content'] = response.text
+        return render_template('queries/_view.html', message=message)
+    except Exception as e:
+        return str(e), 400
+
 @app.route('/')
 def index():
     message_types = MessageType.query.all()
